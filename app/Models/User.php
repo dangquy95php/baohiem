@@ -180,6 +180,26 @@ class User extends AuthenticatableModel implements AuthenticatableContract, Auth
                 ->select('customers.*', 'areas.name');
     }
 
+    public function customers_7_days_ago_called()
+    {
+        return $this->hasManyThrough(Customer::class, Area::class, 'user_id', 'area_id', 'id', 'id')
+                ->where('customers.updated_at', '>=', \Carbon\Carbon::today()->subDays(7))
+                ->where('customers.called', self::CALLED)
+                ->where('areas.status', self::ACTIVE)
+                ->orderBy('customers.updated_at', 'DESC')
+                ->select('customers.*', 'areas.name');
+    }
+
+    public function customers_1_month_ago_called()
+    {
+        return $this->hasManyThrough(Customer::class, Area::class, 'user_id', 'area_id', 'id', 'id')
+                ->where('customers.updated_at', '>=', \Carbon\Carbon::today()->subDays(30))
+                ->where('customers.called', self::CALLED)
+                ->where('areas.status', self::ACTIVE)
+                ->orderBy('customers.updated_at', 'DESC')
+                ->select('customers.*', 'areas.name');
+    }
+
     public function history_area()
     {
         return $this->hasMany(HistoryArea::class, 'user_id', 'id');

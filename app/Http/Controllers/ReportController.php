@@ -11,7 +11,21 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $listCallOfStaff = User::with('customers_today_called')->orderBy('username', 'asc')->get();
+        if ($request->has('type')) {
+            if ($request->input('type') == '7_days_ago') {
+                $listCallOfStaff = User::with('customers_7_days_ago_called')->orderBy('username', 'asc')->get();
+            }
+
+            if ($request->input('type') == '1_month_ago') {
+                $listCallOfStaff = User::with('customers_1_month_ago_called')->orderBy('username', 'asc')->get();
+            }
+
+            if ($request->input('type') == 'today') {
+                $listCallOfStaff = User::with('customers_today_called')->orderBy('username', 'asc')->get();
+            }
+        } else {
+            $listCallOfStaff = User::with('customers_today_called')->orderBy('username', 'asc')->get();
+        }
 
         return view('report.index', compact('listCallOfStaff'));
     }
